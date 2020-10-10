@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--1、组件扫描，主要扫描Controller。-->
+    <!--SpringMVC基于Spring容器，所以在进行SpringMVC操作时，需要将controller存储到Spring容
+    器中，如果使用@Controller注解标注的话，就需要使用：-->
+    <context:component-scan base-package="com.htl.controller"/>
+
+    <!--2、mvc的注解驱动-->
+    <mvc:annotation-driven/>
+
+    <!--3、配置视图解析器-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!--前缀-->
+        <property name="prefix" value="/pages/"/>
+        <!--后缀-->
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <!--4、静态资源权限开放-->
+    <mvc:default-servlet-handler/>
+
+    <!--5、配置权限拦截器-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <!--配置对哪些资源执行拦截操作-->
+            <mvc:mapping path="/**"/>
+            <!--配置对哪些资源排除拦截操作-->
+            <mvc:exclude-mapping path="/user/login"/>
+            <mvc:exclude-mapping path="/css/**"/>
+            <mvc:exclude-mapping path="/img/**"/>
+            <mvc:exclude-mapping path="/plugins/**"/>
+            <!--拦截时，执行的操作-->
+            <bean class="com.htl.interceptor.PrivilegeInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+</beans>
